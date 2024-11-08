@@ -3,12 +3,28 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0052fe;
-  --secondary: #1a1a1a;
-  --accent: #00c853;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 17, 24, 39;
 }
 
 body {
-  background-color: #ffffff;
-  color: var(--secondary);
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+}
+
+@layer base {
+  * {
+    @apply border-gray-800;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-gray-900/60 backdrop-blur-lg border border-gray-800/50;
+  }
 }
