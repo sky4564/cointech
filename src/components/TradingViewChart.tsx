@@ -4,7 +4,25 @@ import { useEffect, useRef } from 'react';
 
 declare global {
   interface Window {
-    TradingView: any;
+    TradingView: {
+      widget: new (config: {
+        container_id: string;
+        symbol: string;
+        interval: string;
+        timezone: string;
+        theme: string;
+        style: string;
+        locale: string;
+        toolbar_bg: string;
+        enable_publishing: boolean;
+        allow_symbol_change: boolean;
+        save_image: boolean;
+        height: string;
+        width: string;
+        hide_side_toolbar: boolean;
+        studies: string[];
+      }) => void;
+    };
   }
 }
 

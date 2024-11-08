@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
-interface CoinGeckoResponse {
-  [key: string]: {
-    krw: number;
-    krw_24h_change?: number;
-    last_updated_at?: number;
-  };
+interface CoinGeckoMarketData {
+  id: string;
+  name: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  image: string;
 }
 
 export async function GET() {
@@ -36,7 +36,7 @@ export async function GET() {
 
     const data = await response.json();
 
-    const formattedData = data.map((coin: any) => ({
+    const formattedData = data.map((coin: CoinGeckoMarketData) => ({
       id: coin.id,
       name: coin.name,
       current_price: coin.current_price,
