@@ -7,9 +7,11 @@ import { getCoinsData } from '@/api/coinGecko';
 import { CoinData } from '@/types/coin';
 import { usePriceAlertStore } from '@/store/priceAlertStore';
 import PriceAlertModal from '@/components/PriceAlertModal';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ParticlesBackground from '@/components/ParticlesBackground';
+import LoginModal from '@/components/LoginModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
   const { data: coins, isLoading, error } = useQuery<CoinData[]>({
@@ -17,8 +19,11 @@ export default function Home() {
     queryFn: getCoinsData,
   });
 
+  const { user } = useAuth();
+
   const prevPrices = useRef<{ [key: string]: number }>({});
   const addAlert = usePriceAlertStore(state => state.addAlert);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     if (coins) {
@@ -67,9 +72,14 @@ export default function Home() {
                 >
                   실시간 차트
                 </Link>
-                <button className="w-full sm:w-auto px-6 py-3 border border-blue-600 rounded-lg font-medium hover:bg-blue-600/10 transition-colors">
-                  회원가입
-                </button>
+                {!user && (
+                  <button
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="w-full sm:w-auto px-6 py-3 border border-blue-600 rounded-lg font-medium hover:bg-blue-600/10 transition-colors"
+                  >
+                    회원가입
+                  </button>
+                )}
               </div>
             </div>
             <div className="glass-effect rounded-2xl p-6 w-full max-w-xl mx-auto lg:max-w-none">
@@ -156,6 +166,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </main>
   );
 } 
