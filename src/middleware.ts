@@ -1,28 +1,25 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { supabase } from '@/lib/supabase';
+
 
 export async function middleware(req: NextRequest) {
-    const res = NextResponse.next()
-    const supabase = createMiddlewareClient({
-        req,
-        res,
-        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    })
+  const res = NextResponse.next();
+  const supabaseClient = createMiddlewareClient({ req, res });
 
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
 
-    // 로그인이 필요한 페이지에 대한 리다이렉션
-    if (!session && req.nextUrl.pathname.startsWith('/protected')) {
-        return NextResponse.redirect(new URL('/auth', req.url))
-    }
+  // 로그인이 필요한 페이지에 대한 리다이렉션
+  if (!session && req.nextUrl.pathname.startsWith('/protected')) {
+    return NextResponse.redirect(new URL('/auth', req.url));
+  }
 
-    return res
+  return res;
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-} 
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+}; 

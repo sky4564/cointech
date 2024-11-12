@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { AuthApiError } from '@supabase/supabase-js';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -44,7 +45,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             }
         } catch (error) {
             console.error('Authentication error:', error);
-            alert(isSignUp ? '회원가입 중 오류가 발생했습니다.' : '로그인 중 오류가 발생했습니다.');
+            if (error instanceof AuthApiError) {
+                alert(`회원가입 중 오류가 발생했습니다: ${error.message}`);
+            } else {
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
         } finally {
             setLoading(false);
         }
